@@ -156,9 +156,9 @@ const ReleasedScreen = () => {
             </DataTable.Header>
             <ScrollView>
               {items.length > 0 ? (
-                items.map((item, key) => {
+                items.map((item, index) => {
                   return (
-                    <DataTable.Row>
+                    <DataTable.Row key={index}>
                       <DataTable.Cell>{item.corpNm}</DataTable.Cell>
                       <DataTable.Cell>{item.prodNm}</DataTable.Cell>
                       <DataTable.Cell numeric>{item.amount}</DataTable.Cell>

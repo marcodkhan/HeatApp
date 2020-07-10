@@ -19,8 +19,7 @@ const useInputState = (initialValue = '') => {
   return { value, onChangeText: setValue };
 };
 
-// const items = [];
-const items = [
+const releasedItems = [
   {
     corpNm: '현대열처리',
     prodNm: '사이드',
@@ -155,10 +154,10 @@ const ReleasedStatusScreen = () => {
               <DataTable.Title numeric>중량</DataTable.Title>
             </DataTable.Header>
             <ScrollView>
-              {items.length > 0 ? (
-                items.map((value, index) => {
+              {releasedItems.length > 0 ? (
+                releasedItems.map((value, index) => {
                   return (
-                    <DataTable.Row>
+                    <DataTable.Row key={index}>
                       <DataTable.Cell>{value.corpNm}</DataTable.Cell>
                       <DataTable.Cell>{value.prodNm}</DataTable.Cell>
                       <DataTable.Cell numeric>{value.amount}</DataTable.Cell>
@@ -186,14 +185,6 @@ const ReleasedStatusScreen = () => {
                 />
               </Layout>
             </ScrollView>
-            {/* <DataTable.Pagination
-              page={1}
-              numberOfPages={3}
-              onPageChange={(page) => {
-                console.log(page);
-              }}
-              label="1-2 of 6"
-            /> */}
           </DataTable>
         </Layout>
       </ScrollView>
@@ -226,13 +217,6 @@ const styles = StyleSheet.create({
     marginLeft: 2,
     marginRight: 2,
   },
-  // dateButton: {
-  //   marginTop: 3,
-  //   marginLeft: 3,
-  //   marginRight: 3,
-  //   height: 48,
-  //   width: 20,
-  // },
   button: {
     flex: 1,
     marginTop: 5,

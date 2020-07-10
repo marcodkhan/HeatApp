@@ -38,16 +38,20 @@ const chargeUserItems = [
 ];
 
 const ArrivalStoredScreen = () => {
-  const [depotCd, setSepotCd] = useState();
-  const [prodBarCd, setProdBarCd] = useState();
-  const [chargeUserCd, setChargeUserCd] = useState();
-  const [chargeUserNm, setChargeUserNm] = useState();
-  const [corpNm, setCorpNm] = useState();
-  const [prodNm, setProdNm] = useState();
-  const [prodNo, setProdNo] = useState();
-  const [prodAmt, setProdAmt] = useState();
-  const [showChargeUser, setShowChargeUser] = useState(false);
+  const [depotCd, setSepotCd] = useState('');
+  const [prodBarCd, setProdBarCd] = useState('');
+  const [depotCdEdit, setDepotCdEdit] = useState(false);
+  const [prodBarCdEdit, setProdBarCdEdit] = useState(false);
+  const editDepotCd = () => setDepotCdEdit(true);
+  const editProdBarCd = () => setProdBarCdEdit(true);
 
+  const [chargeUserCd, setChargeUserCd] = useState('');
+  const [chargeUserNm, setChargeUserNm] = useState('');
+  const [corpNm, setCorpNm] = useState('');
+  const [prodNm, setProdNm] = useState('');
+  const [prodNo, setProdNo] = useState('');
+  const [prodAmt, setProdAmt] = useState(0);
+  const [showChargeUser, setShowChargeUser] = useState(false);
   const showChargeUserDialog = () => setShowChargeUser(true);
   const hideChargeUserDialog = () => setShowChargeUser(false);
 
@@ -77,6 +81,14 @@ const ArrivalStoredScreen = () => {
             mode="outlined"
             label="창고코드"
             value={depotCd}
+            editable={depotCdEdit}
+            onChangeText={setSepotCd}
+          />
+          <IconButton
+            icon="keyboard-o"
+            color={Colors.purple500}
+            size={25}
+            onPress={editDepotCd}
           />
         </Layout>
         <Layout style={styles.container} level="2">
@@ -84,7 +96,15 @@ const ArrivalStoredScreen = () => {
             style={styles.textInput}
             mode="outlined"
             label="제품식별표"
+            placeholder="직접입력"
             value={prodBarCd}
+            editable={prodBarCdEdit}
+          />
+          <IconButton
+            icon="keyboard-o"
+            color={Colors.purple500}
+            size={25}
+            onPress={editProdBarCd}
           />
         </Layout>
         <Layout style={styles.container} level="2">
@@ -157,12 +177,13 @@ const ArrivalStoredScreen = () => {
           <Dialog.ScrollArea>
             <ScrollView contentContainerStyle={{ paddingHorizontal: 10 }}>
               {chargeUserItems.length > 0 ? (
-                chargeUserItems.map((item, index) => {
+                chargeUserItems.map((chargeUserItem, index) => {
                   return (
                     <List.Item
-                      title={item.userNm}
+                      title={chargeUserItem.userNm}
                       left={(props) => <List.Icon {...props} icon="user" />}
-                      onPress={() => pressChargeUser(item)}
+                      onPress={() => pressChargeUser(chargeUserItem)}
+                      key={index}
                     />
                   );
                 })
@@ -195,8 +216,8 @@ const styles = StyleSheet.create({
   textInput: {
     flex: 1,
     marginTop: 2,
-    marginLeft: 2,
-    marginRight: 2,
+    marginLeft: 10,
+    marginRight: 10,
     height: 45,
   },
   datepicker: {
@@ -205,18 +226,11 @@ const styles = StyleSheet.create({
     marginLeft: 2,
     marginRight: 2,
   },
-  // dateButton: {
-  //   marginTop: 3,
-  //   marginLeft: 3,
-  //   marginRight: 3,
-  //   height: 48,
-  //   width: 20,
-  // },
   button: {
     flex: 1,
     marginTop: 5,
-    marginLeft: 3,
-    marginRight: 3,
+    marginLeft: 10,
+    marginRight: 10,
   },
 });
 
