@@ -1,150 +1,243 @@
-import React from 'react';
-import { StyleSheet, FlatList } from 'react-native';
+import React, { useState } from 'react';
 import {
-  Layout,
-  Input,
-  Text,
-  Datepicker,
+  Provider as PaperProvider,
+  TextInput,
   Button,
-  NativeDateService,
+  IconButton,
+  Colors,
+  DataTable,
   Divider,
-  List,
-  ListItem,
-  Icon,
-  Card,
-} from '@ui-kitten/components';
+} from 'react-native-paper';
+import DateTimePicker from '@react-native-community/datetimepicker';
+import { Layout } from '@ui-kitten/components';
+import { StyleSheet, Platform, ScrollView } from 'react-native';
+import AwesomeIcon from 'react-native-vector-icons/FontAwesome';
+import moment from 'moment';
 
-const data = new Array(8).fill({
-  title: 'Item',
-  description: 'akf',
-  date: '2020-10',
-});
-
-const SearchIcon = (props) => <Icon {...props} name="search" pack="material" />;
-
-const useDatePickerState = (initialDate = new Date()) => {
-  const [date, setDate] = React.useState(initialDate);
-  return { date, onSelect: setDate };
+const useInputState = (initialValue = '') => {
+  const [value, setValue] = useState(initialValue);
+  return { value, onChangeText: setValue };
 };
 
-const formatDateService = new NativeDateService('ko', { format: 'YYYY.MM.DD' });
+// const items = [];
+const items = [
+  {
+    corpNm: '현대열처리',
+    prodNm: '사이드',
+    amount: 30,
+    weight: 100,
+  },
+  {
+    corpNm: '현대열처리',
+    prodNm: '사이드',
+    amount: 30,
+    weight: 100,
+  },
+  {
+    corpNm: '현대열처리',
+    prodNm: '사이드',
+    amount: 30,
+    weight: 100,
+  },
+  {
+    corpNm: '현대열처리',
+    prodNm: '사이드',
+    amount: 30,
+    weight: 100,
+  },
+  {
+    corpNm: '현대열처리',
+    prodNm: '사이드',
+    amount: 30,
+    weight: 100,
+  },
+];
 
 const ReleasedStatusScreen = () => {
-  const releasedOutDtState = useDatePickerState();
-  const [corpNm, setCorpNm] = React.useState(null);
-  const [prodNm, setProdNm] = React.useState(null);
-  const [prodNo, setProdNo] = React.useState(null);
+  const [date, setDate] = useState(new Date());
+  const [mode, setMode] = useState('date');
+  const [show, setShow] = useState(false);
+  const [rodt, setRodt] = useState(moment().format('YYYY-MM-DD'));
+  const corpNmInputState = useInputState();
+  const prodNmInputState = useInputState();
+  const prodNoInputState = useInputState();
 
-  const renderItem = ({ item, index }) => (
-    <ListItem
-      title={`${item.title} ${index + 1}`}
-      description={`${item.description} ${index + 1} ${item.date}_${index + 1}`}
-    />
-  );
+  const onChange = (event, selectedDate) => {
+    const currentDate = selectedDate || date;
+    setShow(Platform.OS === 'ios');
+    setDate(currentDate);
+    setRodt(moment(currentDate).format('YYYY-MM-DD'));
+  };
+
+  const showMode = (currentMode) => {
+    setShow(true);
+    setMode(currentMode);
+  };
+
+  const showDatepicker = () => {
+    showMode('date');
+  };
+
+  const searchOnPress = () => {
+    console.log(rodt);
+    console.log(corpNmInputState.value);
+    console.log(prodNmInputState.value);
+    console.log(prodNoInputState.value);
+  };
 
   return (
-    <>
-      <Layout style={styles.container} level="2">
-        <Text style={styles.text} status="basic">
-          출고일
-        </Text>
-        <Datepicker
-          style={styles.picker}
-          status="basic"
-          placeholder="출고일"
-          dateService={formatDateService}
-          {...releasedOutDtState}
-        />
-      </Layout>
-      <Layout style={styles.container} level="2">
-        <Text style={styles.text} status="basic">
-          거래처
-        </Text>
-        <Input
-          style={styles.input}
-          value={corpNm}
-          status="basic"
-          onChangeText={setCorpNm}
-          placeholder="거래처 입력"
-        />
-      </Layout>
-      <Layout style={styles.container} level="2">
-        <Text style={styles.text} status="basic">
-          품   명
-        </Text>
-        <Input
-          style={styles.input}
-          value={prodNm}
-          status="basic"
-          onChangeText={setProdNm}
-          placeholder="품명 입력"
-        />
-      </Layout>
-      <Layout style={styles.container} level="2">
-        <Text style={styles.text} status="basic">
-          품   번
-        </Text>
-        <Input
-          style={styles.input}
-          value={prodNo}
-          status="basic"
-          onChangeText={setProdNo}
-          placeholder="품번 입력"
-        />
-      </Layout>
-      <Divider />
-      <Layout style={styles.container} level="2">
-        <Button
-          style={styles.button}
-          appearance="outline"
-          status="info"
-          accessoryLeft={SearchIcon}>
-          검   색
-        </Button>
-      </Layout>
-      <Divider />
-      <Divider />
-      <Card style={styles.card}>
-        <List data={data} renderItem={renderItem} />
-      </Card>
-    </>
+    <PaperProvider settings={{ icon: (props) => <AwesomeIcon {...props} /> }}>
+      <ScrollView>
+        <Layout style={styles.container} level="2">
+          {show && (
+            <DateTimePicker
+              testID="dateTimePicker"
+              value={date}
+              mode={mode}
+              is24Hour={true}
+              display="default"
+              onChange={onChange}
+            />
+          )}
+          <TextInput
+            style={styles.textInput}
+            mode="outlined"
+            label="출고일"
+            value={rodt}
+            disabled={true}
+          />
+          <IconButton
+            icon="calendar"
+            color={Colors.purple500}
+            size={25}
+            onPress={showDatepicker}
+          />
+        </Layout>
+        <Layout style={styles.container} level="2">
+          <TextInput
+            style={styles.textInput}
+            mode="outlined"
+            label="거래처"
+            {...corpNmInputState}
+          />
+        </Layout>
+        <Layout style={styles.container} level="2">
+          <TextInput
+            style={styles.textInput}
+            mode="outlined"
+            label="품명"
+            {...prodNmInputState}
+          />
+          <TextInput
+            style={styles.textInput}
+            mode="outlined"
+            label="품번"
+            {...prodNoInputState}
+          />
+        </Layout>
+        <Layout style={styles.container} level="2">
+          <Button
+            style={styles.button}
+            icon="search"
+            mode="contained"
+            onPress={searchOnPress}>
+            검색
+          </Button>
+        </Layout>
+        <Divider />
+        <Divider />
+        <Layout style={styles.container} level="2">
+          <DataTable>
+            <DataTable.Header>
+              <DataTable.Title>거래처</DataTable.Title>
+              <DataTable.Title>품명</DataTable.Title>
+              <DataTable.Title numeric>수량</DataTable.Title>
+              <DataTable.Title numeric>중량</DataTable.Title>
+            </DataTable.Header>
+            <ScrollView>
+              {items.length > 0 ? (
+                items.map((value, index) => {
+                  return (
+                    <DataTable.Row>
+                      <DataTable.Cell>{value.corpNm}</DataTable.Cell>
+                      <DataTable.Cell>{value.prodNm}</DataTable.Cell>
+                      <DataTable.Cell numeric>{value.amount}</DataTable.Cell>
+                      <DataTable.Cell numeric>{value.weight}</DataTable.Cell>
+                    </DataTable.Row>
+                  );
+                })
+              ) : (
+                <DataTable.Row>
+                  <DataTable.Cell>검색된 데이터가 없습니다.</DataTable.Cell>
+                </DataTable.Row>
+              )}
+              <Layout style={styles.container} level="2">
+                <Button
+                  style={styles.button}
+                  mode="contained"
+                  icon="chevron-left"
+                  onPress={() => console.log('left')}
+                />
+                <Button
+                  style={styles.button}
+                  mode="contained"
+                  icon="chevron-right"
+                  onPress={() => console.log('right')}
+                />
+              </Layout>
+            </ScrollView>
+            {/* <DataTable.Pagination
+              page={1}
+              numberOfPages={3}
+              onPageChange={(page) => {
+                console.log(page);
+              }}
+              label="1-2 of 6"
+            /> */}
+          </DataTable>
+        </Layout>
+      </ScrollView>
+    </PaperProvider>
   );
 };
 
 const styles = StyleSheet.create({
-  list: {
-    flex: 1,
-    alignItems: 'center',
-  },
   container: {
     flexDirection: 'row',
     flexWrap: 'wrap',
     alignItems: 'center',
   },
-  picker: {
-    flex: 1,
-    margin: 2,
-  },
-  text: {
-    margin: 4,
-    width: 40,
-  },
   input: {
     flex: 1,
-    margin: 2,
+    marginTop: 2,
+    marginLeft: 2,
+    marginRight: 2,
   },
+  textInput: {
+    flex: 1,
+    marginTop: 2,
+    marginLeft: 2,
+    marginRight: 2,
+    height: 45,
+  },
+  datepicker: {
+    flex: 1,
+    marginTop: 2,
+    marginLeft: 2,
+    marginRight: 2,
+  },
+  // dateButton: {
+  //   marginTop: 3,
+  //   marginLeft: 3,
+  //   marginRight: 3,
+  //   height: 48,
+  //   width: 20,
+  // },
   button: {
     flex: 1,
-    margin: 2,
-  },
-  card: {
-    flex: 1,
-  },
-  controlContainer: {
-    borderRadius: 4,
-    margin: 4,
-    padding: 4,
-    backgroundColor: '#3366FF',
+    marginTop: 5,
+    marginLeft: 3,
+    marginRight: 3,
   },
 });
 
